@@ -27,5 +27,3 @@ export const getCode = async (token = "") => {
   failedError.response = response;
   throw failedError;
 };
-
-getCode("979bf2db-aa5b-45cd-bc5b-a607ad1323dc").then(console.log);
