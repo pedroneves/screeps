@@ -1,4 +1,13 @@
+// @ts-check
 import { URL, URLSearchParams } from 'node:url';
+import { ScreepAPIBaseIError, MissingTokenError } from './error';
+
+class WebAPIError extends ScreepAPIBaseIError {
+  constructor({ message, response }) {
+    super({ message });
+    this.response = response;
+  }
+}
 
 const PROTO = 'https';
 const HOST = 'screeps.com';
@@ -6,7 +15,7 @@ const HOST = 'screeps.com';
 const getOrigin = () => `${PROTO}://${HOST}`;
 
 export const fetchCode = async (token = '') => {
-  if (!token) throw new Error('Missing token');
+  if (!token) throw new MissingTokenError();
 
   const searchParams = new URLSearchParams({ _token: token });
 
@@ -19,13 +28,23 @@ export const fetchCode = async (token = '') => {
 
   if (response.ok) return response.json();
 
-  const failedError = new Error('Failed to fetch code');
-  failedError.response = response;
-  throw failedError;
+  throw new WebAPIError({
+    message: 'Failed to fetch code',
+    response,
+  });
 };
 
 export const sendCode = async (token, data) => {
-  if (!token) throw new Error('Missing token');
+  if (!token) throw new MissingTokenError();
+  if (!data) throw new Error('Missing data');
+  if (typeof data !== 'string')
+    throw new Error('Data must be a JSON stringified');
+
+  try {
+    JSON.parse(data);
+  } catch (error) {
+    throw new Error('Data is not JSON parseable');
+  }
 
   const searchParams = new URLSearchParams({ _token: token });
 
@@ -38,11 +57,13 @@ export const sendCode = async (token, data) => {
   const response = await fetch(url, {
     method: 'POST',
     headers,
+    body: data,
   });
 
   if (response.ok) return response.json();
 
-  const failedError = new Error('Failed to fetch code');
-  failedError.response = response;
-  throw failedError;
+  throw new WebAPIError({
+    message: 'Failed to commit code',
+    response,
+  });
 };
