@@ -5,7 +5,8 @@
   "author": "Pedro Neves",
   "main": "index.js",
   "scripts": {
-    "printbranch": "node ./scripts/print-branch"
+    "printbranch": "node ./scripts/print-branch",
+    "code:commit": "node ./scripts/code/commit"
   },
   "repository": {
     "type": "git",
