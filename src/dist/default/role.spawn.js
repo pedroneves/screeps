@@ -37,4 +37,13 @@ const run = (spawn) => {
   }
 };
 
-module.exports = { run };
+module.exports = {
+  run: (entity) => {
+    try {
+      run(entity);
+    } catch (error) {
+      console.log(error.message);
+      console.log(error);
+    }
+  },
+};

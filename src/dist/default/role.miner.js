@@ -103,5 +103,12 @@ const run = (miner) => {
 
 module.exports = {
   createLightMinerFactory,
-  run,
+  run: (entity) => {
+    try {
+      run(entity);
+    } catch (error) {
+      console.log(error.message);
+      console.log(error);
+    }
+  },
 };
