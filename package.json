@@ -7,7 +7,7 @@
   "scripts": {
     "printbranch": "node ./scripts/print-branch",
     "code:commit": "node ./scripts/code/commit",
-    "test": "NODE_ENV=test && jest --testMatch /**/tests/*.spec.js"
+    "test": "NODE_ENV=test && jest --testMatch /**/tests/*.spec.js --coverage"
   },
   "repository": {
     "type": "git",
