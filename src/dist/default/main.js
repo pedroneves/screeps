@@ -3,7 +3,8 @@ const roleMiner = require('./role.miner');
 
 module.exports.loop = function () {
   for (let spawnName in Game.spawns) {
-    roleSpawn.run(spawnName);
+    const spawn = Game.spawns[spawnName];
+    roleSpawn.run(spawn);
   }
 
   for (let creepName in Game.creeps) {

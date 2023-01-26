@@ -1,51 +1,40 @@
-const configs = require('./configs');
-const utils = require('./utils');
-const roleMiner = require('./role.miner');
+//@ts-check
 
-const STATE_IDLE = 'IDLE';
-const STATE_BUILDING = 'BUILDING';
+/**
+ * @typedef {import('./types').WorkflowContext} WorkflowContext
+ */
+
+const {
+  createWorkflowContext,
+  iterateWorkflow,
+  updateContext,
+} = require('./utils.workflow');
+const workflow = require('./role.spawn.workflow.v0');
+
+const createSpawnState = () =>
+  createWorkflowContext({ initialStepName: workflow.startingStep.name });
 
 const run = (spawn) => {
+  const { memory } = spawn;
+
   const initMemory = () => {
-    if (!spawn.memory.state)
-      spawn.memory.state = {
-        status: STATE_IDLE,
-      };
-  };
-
-  const say = (text = 'noOooOp...') => {
-    new RoomVisual(configs.roomName).text(text, spawn.pos.x, spawn.pos.y - 2, {
-      color: 'green',
-      font: 1,
-    });
-  };
-
-  const clearSaying = () => {
-    new RoomVisual(configs.roomName).clear();
-  };
-
-  const isIdle = () => spawn.memory.state.status === STATE_IDLE;
-  const isBuilding = () => spawn.memory.state.status === STATE_BUILDING;
-
-  const spawnLightMiner = () => {
-    spawn.memory.state.status = STATE_BUILDING;
-    const incubateAt = roleMiner.createLightMinerFactory();
-    incubateAt({ spawn });
-  };
-
-  const checkMinerAmount = () => {
-    const minersAmount = utils.getAmountOfMiners();
-    say(`Found ${minersAmount} miners`);
-
-    if (minersAmount < configs.maxNumberMiners) {
-      spawnLightMiner();
-    }
+    const { state } = memory;
+    // Only creates the state, if not there yet
+    if (!state) spawn.memory.state = createSpawnState();
   };
 
   // -------------------------------------------------------
 
   initMemory();
-  checkMinerAmount();
+
+  if (memory.state) {
+    const context = /** @type {WorkflowContext} */ (memory.state);
+    const iteration = iterateWorkflow({ workflow, context, entity: spawn });
+    spawn.memory.state = updateContext(context, {
+      nextStepName: iteration.result.nextStepName,
+      dataPatch: iteration.result.dataUpdates,
+    });
+  }
 };
 
-module.exports = { run: (spawnName) => run(Game.spawns[spawnName]) };
+module.exports = { run };
