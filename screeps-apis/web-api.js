@@ -1,6 +1,6 @@
 // @ts-check
 import { URL, URLSearchParams } from 'node:url';
-import { ScreepAPIBaseIError, MissingTokenError } from './error';
+import { ScreepAPIBaseIError, MissingTokenError } from './error.js';
 
 class WebAPIError extends ScreepAPIBaseIError {
   constructor({ message, response }) {
