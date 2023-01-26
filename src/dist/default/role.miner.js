@@ -87,12 +87,12 @@ const run = (miner) => {
 
   // =====================================================================================
 
-  // Do nothing if spawning
   initMemory();
 
+  // Do nothing if spawning
   if (spawning) return;
-  const { state } = memory;
 
+  const { state } = memory;
   const context = /** @type {WorkflowContext} */ (state);
   const iteration = iterateWorkflow({ workflow, context, entity: miner });
   miner.memory.state = updateContext(context, {
