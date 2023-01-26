@@ -28,11 +28,9 @@ const run = (spawn) => {
   const isBuilding = () => spawn.memory.state.status === STATE_BUILDING;
 
   const spawnLightMiner = () => {
-    if (isIdle()) {
-      spawn.memory.state.status = STATE_BUILDING;
-      const incubateAt = roleMiner.createLightMiner();
-      incubateAt(spawn);
-    }
+    spawn.memory.state.status = STATE_BUILDING;
+    const incubateAt = roleMiner.createLightMinerFactory();
+    incubateAt({ spawn });
   };
 
   const checkMinerAmount = () => {
