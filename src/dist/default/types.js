@@ -11,7 +11,6 @@
  * @property {boolean} isWorkflowStep
  * @property {string} name
  * @property {(Workflow, WorkflowContext, any) => WorkflowStepExecutionResult} exec
- * @property {string} execString
  *
  * @typedef {object} WorkflowContext
  * @property {boolean} isWorkflowContext

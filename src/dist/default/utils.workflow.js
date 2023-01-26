@@ -80,7 +80,6 @@ const createWorkflowStep = ({ name = `Step #${randomInteger()}`, exec }) => {
     isWorkflowStep: true,
     name,
     exec,
-    execString: exec.toString(),
   };
 
   return step;
